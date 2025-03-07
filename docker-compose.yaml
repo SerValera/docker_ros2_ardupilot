@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+  ros2:
+    image: ros2_sim2:humble
+    ipc: host
+    build: .
+    devices:
+      - "/dev/fuse:/dev/fuse:rwm"
+    container_name: ros2-container
+    command: ros2 launch demo_nodes_cpp talker_listener.launch.py
+    environment:
+      - LANG=C.UTF-8
+    volumes:
+      - "/tmp/.X11-unix:/tmp/.X11-unix"
+      - ~/.Xauthority:/home/sim/.Xauthority
+    ports:
+        - "14540-14550:14540-14550/udp"
+        - "14570:14570/udp"
+        - "14580:14580/udp"
+        - "11311:11311"
+    tty: true
+    stdin_open: true
+    networks:
+      - rosnet
+
+networks:
+  rosnet:
+    driver: bridge
